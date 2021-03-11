@@ -1,0 +1,95 @@
+############################### SERVER ###################################
+
+-->> Chnage in /etc/hostname eg. server
+
+-->> reboot
+
+-->> yum -y install ntpdate
+     ntpdate 0.centos.pool.ntp.org
+
+-->> Add entry of server's private ip and its name in /etc/hosts like 
+     172.31.32.182 server.opsworld.com server
+
+-->> rpm -Uvh https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
+
+-->> yum install -y puppetserver
+
+-->> To change the value of memory allocation, edit the below file.
+     vi /etc/sysconfig/puppetserver
+     Change the value.
+     From :: JAVA_ARGS="-Xms2g -Xmx2g -Djruby.logger.class=com.puppetlabs.jruby_utils.jruby.Slf4jLogger"
+     To :: For 512MB, use below settings.
+     JAVA_ARGS="-Xms512m -Xmx512m -Djruby.logger.class=com.puppetlabs.jruby_utils.jruby.Slf4jLogger"
+     
+-->> vi /etc/puppetlabs/puppet/puppet.conf
+     [master]
+     dns_alt_names = server.opsworld.com, server
+     [main]
+     certname = server.opsworld.com
+     server = server.opsworld.com
+     environment = production
+     runinterval = 1h
+     
+-->> source /etc/profile.d/puppet-agent.sh
+
+-->> puppetserver ca setup (run this command if give error skip this command and step ahead)
+
+-->> systemctl start puppetserver;systemctl enable puppetserver
+
+-->> yum install firewalld -y
+
+-->> systemctl start firewalld;systemctl enable firewalld
+
+-->> firewall-cmd --permanent --add-port=8140/tcp;firewall-cmd --reload
+
+     (AFTER INSTALLATION OF PUPPET-AGENT)
+     
+-->> puppetserver ca list
+     Output:
+     client.opsworld.com   (SHA256)  A6:0E:93:51:FF:53:C8:FA:63:70:72:53:B6:1E:1B:A8:49:79:37:7E:57:00:02:AE:32:44:22:BE:97:F5:08:09
+     
+-->> puppetserver ca sign --certname client.opsworld.com
+
+-->> puppetserver ca list --all (to sign all cert at same time)
+
+###############################3 CLIENT ####################################
+
+-->> Chnage in /etc/hostname eg. client
+
+-->> reboot
+
+-->> yum -y install ntpdate
+     ntpdate 0.centos.pool.ntp.org
+     
+-->> Add entry of server's and client's private ip and its name in /etc/hosts like 
+     172.31.32.182 server.opsworld.com server
+     172.31.46.200 client.opsworld.com client
+     
+-->> rpm -Uvh https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
+
+-->> yum install -y puppet-agent
+
+-->> vi /etc/puppetlabs/puppet/puppet.conf
+
+-->> [main]
+     certname = client.opsworld.com
+     server = server.opsworld.com
+     environment = production
+     runinterval = 1h
+
+-->> source /etc/profile.d/puppet-agent.sh
+     
+-->> puppet resource service puppet ensure=running enable=true
+
+##################################### site.pp example ################################
+
+node 'client.itzgeek.local' { # Applies only to mentioned node; if nothing mentioned, applies to all.
+  file { '/tmp/puppetesttdir': # Resource type file
+    ensure => 'directory', # Create as a diectory
+    owner => 'root', # Ownership
+    group => 'root', # Group Name
+    mode => '0755', # Directory permissions
+  }
+}
+
+

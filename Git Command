@@ -1,0 +1,19 @@
+############################ add code in repo ############################
+
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin <remote>
+git push -u origin main
+
+########################### push an existing repository from the command line ##################################
+
+git remote add origin <remote>
+git branch -M main
+git push -u origin main
+
+######################### pull #################################3
+
+git remote add origin <remote>
+git pull <remote> <branch>
