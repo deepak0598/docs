@@ -1,0 +1,96 @@
+################################  Images #################################
+
+sudo docker run centos -->> This command will download the centos image, if it is not already present, and run the OS as a container. 
+
+sudo docker run -it centos /bin/bash -->> run a container and enter in its shell prompt
+
+docker images -->> This command is used to display all the images currently installed on the system.
+
+docker rmi ImageID -->> This command is used to remove Docker images.
+
+docker images -q -->> the output will show only the Image ID’s of the images on the Docker host.
+
+docker inspect Repository  -->> Repository − This is the name of the Image. and The output will show detailed information on the Image.
+
+
+############################### Docker Container ##################################
+
+sudo docker run –it centos /bin/bash -->> Then hit Crtl+p+q and you will return to your OS shell.
+
+docker ps -->> list all of the containers on the machine via the docker ps command.
+
+docker ps -a -->> (─a) It tells the docker ps command to list all of the containers on the system.
+
+docker history ImageID -->> (ImageID) This is the Image ID for which you want to see all the commands that were run against it. The output will show all the commands run against that image.
+
+docker top ContainerID -->> (ContainerID) This is the Container ID for which you want to see the top processes. The above command will show the top-level processes within a container.
+
+docker stop ContainerID -->> The output will give the ID of the stopped container.
+
+docker rm ContainerID -->> This command is used to delete a container. The output will give the ID of the removed container.
+
+docker stats ContainerID -->> This command is used to provide the statistics of a running container. The output will show the CPU and Memory utilization of the Container. To quit (ctrl+c)
+
+docker attach ContainerID -->> This command is used to attach to a running container. Once you have attached to the Docker container, you can run the above command to see the process utilization in that Docker container.
+
+docker pause ContainerID -->> This command is used to pause the processes in a running container. returns The ContainerID of the paused container.
+
+docker unpause ContainerID -->> This command is used to unpause the processes in a running container.
+
+docker kill ContainerID -->> This command is used to kill the processes in a running container.
+
+############################## Docker – Container Lifecycle ##############################
+
+Initially, the Docker container will be in the created state.
+
+Then the Docker container goes into the running state when the Docker run command is used.
+
+The Docker kill command is used to kill an existing Docker container.
+
+The Docker pause command is used to pause an existing Docker container.
+
+The Docker stop command is used to pause an existing Docker container.
+
+The Docker run command is used to put a container back from a stopped state to a running state.
+
+################################# Docker File ###############################
+
+Step 1 -->> Create a file called Docker File and edit it using vim. Please note that the name of the file has to be "Dockerfile" with "D" as capital.
+
+Step 2 --> Build your Docker File using the following instructions.
+
+    #This is a sample Image 
+    >> FROM ubuntu 
+       MAINTAINER demousr@gmail.com 
+       RUN apt-get update 
+       RUN apt-get install –y nginx 
+       CMD [“echo”,”Image created”]
+
+    >> The first line "#This is a sample Image" is a comment. You can add comments to the Docker File with the help of the # command
+    >> The next line has to start with the FROM keyword. It tells docker, from which base image you want to base your image from. In our example, we are creating an image from the ubuntu image.
+    >> The next command is the person who is going to maintain this image. Here you specify the MAINTAINER keyword and just mention the email ID.
+    >> The RUN command is used to run instructions against the image. In our case, we first update our Ubuntu system and then install the nginx server on our ubuntu image.
+    >> The last command is used to display a message to the user.
+
+Step 3 -->> We created our Docker File in the last chapter. It’s now time to build the Docker File. The Docker File can be built with the following command >> docker build
+
+    >> docker build  -t ImageName:TagName dir
+
+    Options ::
+    >> -t − is to mention a tag to the image
+    >> ImageName − This is the name you want to give to your image.
+    >> TagName − This is the tag you want to give to your image.
+    >> Dir − The directory where the Docker File is present.
+    >> eg. sudo docker build –t myimage:0.1.
+    
+################################## Docker - Managing Ports #################################
+
+>> docker inspect Container/Image -->> To understand what ports are exposed by the container, you should use the Docker inspect command to inspect the image.
+
+>> The output of the inspect command gives a JSON output. If we observe the output, we can see that there is a section of "ExposedPorts" and see that there are two ports mentioned. One is the data port of 8080 and the other is the control port of 50000.
+To run Jenkins and map the ports, you need to change the Docker run command and add the ‘p’ option which specifies the port mapping. So, you need to run the following command -->> sudo docker run -p 8080:8080 -p 50000:50000 jenkins
+
+    >> The left-hand side of the port number mapping is the Docker host port to map to and the right-hand side is the Docker container port  number.
+    >> When you open the browser and navigate to the Docker host on port 8080, you will see Jenkins up and running. 
+    
+       

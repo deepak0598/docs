@@ -17,3 +17,7 @@ git push -u origin main
 
 git remote add origin <remote>
 git pull <remote> <branch>
+
+
+##################### create a docx file #################
+echo "Hello" | pandoc -o out.docx
